@@ -5,18 +5,19 @@ import java.util.Vector;
 import java.lang.Math;
 
 import edu.berkeley.compbio.jlibsvm.kernel.KernelFunction;
+import it.uniroma2.util.tree.LexicalizedTree;
 import it.uniroma2.util.tree.Tree;
 import it.uniroma2.util.vector.VectorProvider;
 import it.uniroma2.util.math.ArrayMath;
 import it.unitn.composes.composition.BasicComposition;
-import it.unitn.composes.tree.SemanticTree;
+import it.unitn.composes.tree.LexicalizedSemanticTree;
 import it.unitn.composes.utils.StructureUtils;
 
 
 public class CollapsedTreeKernel implements KernelFunction<Tree>{
 
 	private double lambda = 0.4;
-	private boolean lexicalized = true;
+//	private boolean lexicalized = true;
 	protected VectorProvider semanticSpace;
 	protected BasicComposition composition; 
 	
@@ -32,9 +33,9 @@ public class CollapsedTreeKernel implements KernelFunction<Tree>{
 		composition = null;
 	}
 	
-	public void setLexicalized(boolean lexicalized) {
-		this.lexicalized = lexicalized;
-	}
+//	public void setLexicalized(boolean lexicalized) {
+//		this.lexicalized = lexicalized;
+//	}
 	
 	public void setLambda(double lambda) {
 		this.lambda = lambda;
@@ -55,18 +56,24 @@ public class CollapsedTreeKernel implements KernelFunction<Tree>{
 	}
 	
 	public double value(Tree arg0, Tree arg1) {
-		SemanticTree tree1 = new SemanticTree(arg0, semanticSpace, composition);
-		SemanticTree tree2 = new SemanticTree(arg1, semanticSpace, composition);
+		LexicalizedSemanticTree tree1 = new LexicalizedSemanticTree(LexicalizedTree.transform(arg0), semanticSpace, composition);
+		LexicalizedSemanticTree tree2 = new LexicalizedSemanticTree(LexicalizedTree.transform(arg1), semanticSpace, composition);
 		tree1.setParent(null);
 		tree2.setParent(null);
-		return value(tree1, tree2);
+		double value = value(tree1, tree2);
+		System.out.println("*****************************");
+		System.out.println("Tree1: " + tree1.toPennTree());
+		System.out.println("Tree2: " + tree1.toPennTree());
+		System.out.println("value: " + value);
+		
+		return value;
 	}
 	
-	public double value(SemanticTree tree1, SemanticTree tree2) {
-		Vector<SemanticTree> nodes1 = tree1.getAllNodes();
+	public double value(LexicalizedSemanticTree tree1, LexicalizedSemanticTree tree2) {
+		Vector<LexicalizedSemanticTree> nodes1 = tree1.getAllNodes();
 //		System.out.println(nodes1.size());
 		
-		Vector<SemanticTree> nodes2 = tree2.getAllNodes();
+		Vector<LexicalizedSemanticTree> nodes2 = tree2.getAllNodes();
 //		System.out.println(nodes2.size());
 		
 		double[][] deltaMatrix = computeDeltaMatrix(nodes1,nodes2);
@@ -81,12 +88,12 @@ public class CollapsedTreeKernel implements KernelFunction<Tree>{
 	
 	
 	
-	protected double[][] computeDeltaMatrix(Vector<SemanticTree> nodes1, Vector<SemanticTree> nodes2) {
-		HashMap<SemanticTree,Integer> nodeIndices1 = StructureUtils.vector2HashMap(nodes1);
-		HashMap<SemanticTree,Integer> nodeIndices2 = StructureUtils.vector2HashMap(nodes2);
+	protected double[][] computeDeltaMatrix(Vector<LexicalizedSemanticTree> nodes1, Vector<LexicalizedSemanticTree> nodes2) {
+		HashMap<LexicalizedSemanticTree,Integer> nodeIndices1 = StructureUtils.vector2HashMap(nodes1);
+		HashMap<LexicalizedSemanticTree,Integer> nodeIndices2 = StructureUtils.vector2HashMap(nodes2);
 		double[][] deltaMatrix = new double[nodes1.size()][nodes2.size()];
-		for (SemanticTree node1: nodes1) {
-			for (SemanticTree node2: nodes2) {
+		for (LexicalizedSemanticTree node1: nodes1) {
+			for (LexicalizedSemanticTree node2: nodes2) {
 				deltaMatrix[nodeIndices1.get(node1)][nodeIndices2.get(node2)] =
 						computeDelta(deltaMatrix,node1,node2,nodeIndices1,nodeIndices2);
 			}
@@ -94,8 +101,8 @@ public class CollapsedTreeKernel implements KernelFunction<Tree>{
 		return deltaMatrix;
 	}
 	
-	protected double computeDelta(double[][] deltaMatrix, SemanticTree node1, SemanticTree node2,
-			HashMap<SemanticTree,Integer> nodeIndices1,HashMap<SemanticTree,Integer> nodeIndices2) {
+	protected double computeDelta(double[][] deltaMatrix, LexicalizedSemanticTree node1, LexicalizedSemanticTree node2,
+			HashMap<LexicalizedSemanticTree,Integer> nodeIndices1,HashMap<LexicalizedSemanticTree,Integer> nodeIndices2) {
 		try {
 			double delta = 0;
 			if (node1.isTerminal() || node2.isTerminal()) {
@@ -123,8 +130,8 @@ public class CollapsedTreeKernel implements KernelFunction<Tree>{
 			} else {
 	            double product_children_delta = this.lambda; 
 	            for (int i = 0; i < node1.getChildren().size(); i++) {
-	                SemanticTree child1 = (SemanticTree) node1.getChildren().get(i);
-	                SemanticTree child2 = (SemanticTree) node2.getChildren().get(i);
+	            	LexicalizedSemanticTree child1 = (LexicalizedSemanticTree) node1.getChildren().get(i);
+	            	LexicalizedSemanticTree child2 = (LexicalizedSemanticTree) node2.getChildren().get(i);
 	                double child_delta = deltaMatrix[nodeIndices1.get(child1)][nodeIndices2.get(child2)];
 	                if (child_delta == -1) {
 	                	System.out.println("Error");
@@ -134,8 +141,8 @@ public class CollapsedTreeKernel implements KernelFunction<Tree>{
 	            }
 	            double sim_children_product = 1;
 	            for (int i = 0; i < node1.getChildren().size(); i++) {
-	            	SemanticTree child1 = (SemanticTree) node1.getChildren().get(i);
-	            	SemanticTree child2 = (SemanticTree) node2.getChildren().get(i);
+	            	LexicalizedSemanticTree child1 = (LexicalizedSemanticTree) node1.getChildren().get(i);
+	            	LexicalizedSemanticTree child2 = (LexicalizedSemanticTree) node2.getChildren().get(i);
 	                sim_children_product *= ArrayMath.cosine(child1.getVector(), child2.getVector());
 	            }
 	            delta = (product_children_delta + 
