@@ -10,6 +10,7 @@ import it.uniroma2.util.tree.Tree;
 import it.uniroma2.util.vector.VectorProvider;
 import it.uniroma2.util.math.ArrayMath;
 import it.unitn.composes.composition.BasicComposition;
+import it.unitn.composes.math.VectorUtils;
 import it.unitn.composes.tree.LexicalizedSemanticTree;
 import it.unitn.composes.utils.StructureUtils;
 
@@ -118,7 +119,7 @@ public class CollapsedTreeKernel implements KernelFunction<Tree>{
 	                delta = 0;
 	            } else {
 	                delta = (Math.pow(this.lambda, (Math.max(node1.getHeight(),node2.getHeight()) - 1))) * 
-	                                                                 ArrayMath.cosine(node1.getVector(), node2.getVector());
+	                                                                 VectorUtils.cosine(node1.getVector(), node2.getVector());
 //	                for (double value: node1.getVector()) {
 //	                	System.out.print(" " + value);
 //	                }
@@ -127,7 +128,7 @@ public class CollapsedTreeKernel implements KernelFunction<Tree>{
 //	                	System.out.print(" " + value);
 //	                }
 //	                System.out.println();
-//	                System.out.println(ArrayMath.cosine(node1.getVector(), node2.getVector()));
+//	                System.out.println(VectorUtils.cosine(node1.getVector(), node2.getVector()));
 	            }
 			} else {
 	            double product_children_delta = this.lambda; 
@@ -145,11 +146,11 @@ public class CollapsedTreeKernel implements KernelFunction<Tree>{
 	            for (int i = 0; i < node1.getChildren().size(); i++) {
 	            	LexicalizedSemanticTree child1 = (LexicalizedSemanticTree) node1.getChildren().get(i);
 	            	LexicalizedSemanticTree child2 = (LexicalizedSemanticTree) node2.getChildren().get(i);
-	                sim_children_product *= ArrayMath.cosine(child1.getVector(), child2.getVector());
+	                sim_children_product *= VectorUtils.cosine(child1.getVector(), child2.getVector());
 	            }
 	            delta = (product_children_delta + 
 	                           (Math.pow(this.lambda, (Math.max(node1.getHeight(),node2.getHeight()) - 1))) * 
-	                            (ArrayMath.cosine(node1.getVector(), node2.getVector()) - 
+	                            (VectorUtils.cosine(node1.getVector(), node2.getVector()) - 
 	                             sim_children_product));
 			}
 //			System.out.println("delta: " + delta);

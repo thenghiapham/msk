@@ -2,8 +2,6 @@ package it.unitn.composes.math;
 
 import it.uniroma2.util.math.ArrayMath;
 
-import org.apache.commons.lang.ArrayUtils;
-
 public class VectorUtils {
 	public static double[] pointwiseProduct(double[] v1, double[] v2) {
 		if (v1 == null || v2 == null) {
