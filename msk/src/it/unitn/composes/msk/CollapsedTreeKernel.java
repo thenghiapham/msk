@@ -58,12 +58,14 @@ public class CollapsedTreeKernel implements KernelFunction<Tree>{
 	public double value(Tree arg0, Tree arg1) {
 		LexicalizedSemanticTree tree1 = new LexicalizedSemanticTree(LexicalizedTree.transform(arg0), semanticSpace, composition);
 		LexicalizedSemanticTree tree2 = new LexicalizedSemanticTree(LexicalizedTree.transform(arg1), semanticSpace, composition);
+		System.out.println("*****************************");
+		System.out.println("arg0: " + arg0.toPennTree());
+		System.out.println("arg1: " + arg1.toPennTree());
+		System.out.println("tree1: " + tree1.toPennTree());
+		System.out.println("tree2: " + tree2.toPennTree());
 		tree1.setParent(null);
 		tree2.setParent(null);
 		double value = value(tree1, tree2);
-		System.out.println("*****************************");
-		System.out.println("Tree1: " + tree1.toPennTree());
-		System.out.println("Tree2: " + tree1.toPennTree());
 		System.out.println("value: " + value);
 		
 		return value;
@@ -150,7 +152,11 @@ public class CollapsedTreeKernel implements KernelFunction<Tree>{
 	                            (ArrayMath.cosine(node1.getVector(), node2.getVector()) - 
 	                             sim_children_product));
 			}
+//			System.out.println("delta: " + delta);
 	        return delta;
+		} catch (NullPointerException e) {
+			System.exit(1);
+			return 0;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return 0;

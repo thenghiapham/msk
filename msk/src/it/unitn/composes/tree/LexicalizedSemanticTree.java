@@ -2,6 +2,7 @@ package it.unitn.composes.tree;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.Vector;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -14,6 +15,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import it.uniroma2.util.math.ArrayMath;
 import it.uniroma2.util.tree.LexicalizedTree;
 import it.uniroma2.util.tree.Tree;
 import it.uniroma2.util.vector.VectorProvider;
@@ -22,11 +24,13 @@ import it.unitn.composes.composition.BasicComposition;
 public class LexicalizedSemanticTree extends Tree{
 	
 	private double[] vector;
-	String lemma;
+	String lemma="";
 	public LexicalizedSemanticTree(LexicalizedTree syntacticTree, VectorProvider semanticSpace, BasicComposition com) {
 		String label = syntacticTree.getRootLabel();
 		setRootLabel(label);
 		Vector<Tree> children = new Vector<Tree>();
+		lemma = syntacticTree.getLemma();
+		if (lemma == null) lemma = "";
 		if (syntacticTree.isTerminal()) {
 			
 			
@@ -35,14 +39,11 @@ public class LexicalizedSemanticTree extends Tree{
 			LexicalizedSemanticTree child = new LexicalizedSemanticTree(syntacticChild, semanticSpace, com);
 			children.add(child);
 			try {
-				lemma = syntacticTree.getLemma();
+				
 				vector = semanticSpace.getVector(lemma);
-//				if (lemma != null) {
-//					System.out.println(lemma);
-//				}
 			} catch (Exception e) {
 				e.printStackTrace();
-				vector = null;
+				vector = ArrayMath.zeros(semanticSpace.getVectorSize());
 			}
 			
 			child.vector = this.vector;
@@ -152,5 +153,30 @@ public class LexicalizedSemanticTree extends Tree{
 			return null;
 		}
 		
+	}
+	
+	@Override
+	public String toPennTree() {
+		String treeString = "";
+		if (vector == null) {
+			treeString = "("+getRootLabel() + ":" + lemma + ":##null";
+		} else {
+			treeString = "("+getRootLabel() + ":" + lemma + ":##" + vector[0] +"#" + vector[1];
+		}
+		List<Tree>  children = getChildren(); 
+		if (children.size() == 1) {
+			treeString += " ";
+			if (children.get(0).getChildren().size() == 0)
+				treeString += children.get(0).getRootLabel();
+			else
+				treeString += children.get(0).toPennTree();
+		}
+		else if (children.size() > 1) {
+			treeString += " ";
+			for (Tree child : children)
+				treeString += child.toPennTree();
+		}
+		treeString += ")";
+		return treeString;
 	}
 }

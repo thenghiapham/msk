@@ -15,7 +15,8 @@ public class SemanticSpace implements VectorProvider{
     public enum SemanticVectorFileType {dense,sparse};
     private Hashtable<String,double[]> distributionalSemanticDictionary;
     private int vectorSize;
-    private RandomVectorGenerator rtg;
+    boolean zero = true;
+//    private RandomVectorGenerator rtg;
     
     boolean plusOne = false;
     
@@ -23,14 +24,14 @@ public class SemanticSpace implements VectorProvider{
         this.vectorSize = vectorSize;
         this.distributionalSemanticDictionary = new Hashtable<String,double[]>();
         this.loadVectors(null, semanticVectors, SemanticVectorFileType.dense);
-        this.rtg = new RandomVectorGenerator(vectorSize);
+//        this.rtg = new RandomVectorGenerator(vectorSize);
     }
 
     public SemanticSpace(int vectorSize, File semanticVectors, boolean plusOne){
         this.vectorSize = vectorSize;
         this.distributionalSemanticDictionary = new Hashtable<String,double[]>();
         this.loadVectors(null, semanticVectors, SemanticVectorFileType.dense);
-        this.rtg = new RandomVectorGenerator(vectorSize);
+//        this.rtg = new RandomVectorGenerator(vectorSize);
         this.plusOne = plusOne;
     }
     
@@ -41,19 +42,19 @@ public class SemanticSpace implements VectorProvider{
         double[] v = new double[vectorSize];
         if (word == null){
             // if the node doesn't have a word attached
-        	v = ArrayMath.versor(ArrayMath.zeros(vectorSize));
+        	v = ArrayMath.zeros(vectorSize);
 //            v = ArrayMath.versor(ArrayMath.ones(vectorSize));        
         } else if (distributionalSemanticDictionary.get(word.toLowerCase()) == null){
                 // if it can't find the word (personal names, particles and so on)
-                //v = ArrayMath.versor(rtg.getVector(word));
-        	v = ArrayMath.versor(ArrayMath.zeros(vectorSize));
+                // v = ArrayMath.versor(rtg.getVector(word));
+        	v = ArrayMath.zeros(vectorSize);
         } //Looking for the term vector in cache
         else if (distributionalSemanticDictionary != null && distributionalSemanticDictionary.get(word.toLowerCase()) != null){        
                 v = ArrayMath.versor(distributionalSemanticDictionary.get(word.toLowerCase()));
         } else {
             //System.out.println(distributionalSemanticDictionary);
 //            v = ArrayMath.versor(ArrayMath.ones(vectorSize));
-        	v = ArrayMath.versor(ArrayMath.ones(vectorSize));
+        	v = ArrayMath.zeros(vectorSize);
         }
     
         if (plusOne){
