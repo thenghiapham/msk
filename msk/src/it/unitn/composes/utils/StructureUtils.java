@@ -1,8 +1,13 @@
 package it.unitn.composes.utils;
 
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Vector;
+
+import org.ejml.simple.SimpleMatrix;
 
 public class StructureUtils {
 	public static<E> HashMap<E,Integer> vector2HashMap(Vector<E> nodes) {
@@ -13,5 +18,31 @@ public class StructureUtils {
 		return result;
 	}
 	
-	
+	public static HashMap<String, SimpleMatrix> readFaMatrixFile(String faMatrixFile) throws IOException{
+		HashMap<String, SimpleMatrix> result = new HashMap<String, SimpleMatrix> ();
+		BufferedReader reader = new BufferedReader(new FileReader(faMatrixFile));
+		String line = reader.readLine();
+		String[] dims = line.split("\t");
+		int row = Integer.parseInt(dims[0]);
+		int col = Integer.parseInt(dims[1]);
+		int size = row * col;
+		while (line != null) {
+			
+			line = reader.readLine();
+			if (line == null) break;
+			String[] elements = line.split("\t");
+			if (elements.length != size) {
+				reader.close();
+				throw new IOException("Wrong number of elements");
+			}
+			double[] data = new double[row * col];
+			for (int i = 0; i < size; i++) {
+				data[i] = Double.parseDouble(elements[i + 1]);
+			}
+			SimpleMatrix matrix = new SimpleMatrix(row, col, true, data);
+			result.put(elements[0], matrix);
+		}
+		reader.close();
+		return result;
+	}
 }

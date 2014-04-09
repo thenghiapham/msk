@@ -25,6 +25,7 @@ public class LexicalizedSemanticTree extends Tree{
 	
 	private double[] vector;
 	String lemma="";
+	
 	public LexicalizedSemanticTree(LexicalizedTree syntacticTree, VectorProvider semanticSpace, BasicComposition com) {
 		String label = syntacticTree.getRootLabel();
 		setRootLabel(label);
@@ -32,8 +33,8 @@ public class LexicalizedSemanticTree extends Tree{
 		lemma = syntacticTree.getLemma();
 		if (lemma == null) lemma = "";
 		if (syntacticTree.isTerminal()) {
-			
-			
+			// TODO: check this
+			vector = ArrayMath.zeros(semanticSpace.getVectorSize());
 		} else if (syntacticTree.isPreTerminal()) {
 			LexicalizedTree syntacticChild = (LexicalizedTree) syntacticTree.getChildren().get(0);
 			LexicalizedSemanticTree child = new LexicalizedSemanticTree(syntacticChild, semanticSpace, com);
@@ -63,6 +64,12 @@ public class LexicalizedSemanticTree extends Tree{
 			}
 			this.setChildren(children);
 		}
+	}
+	
+	public LexicalizedSemanticTree(LexicalizedTree tree) {
+		String label = tree.getRootLabel();
+		setRootLabel(label);
+		this.vector = null;
 	}
 	
 	public double[] getVector() {
@@ -178,5 +185,9 @@ public class LexicalizedSemanticTree extends Tree{
 		}
 		treeString += ")";
 		return treeString;
+	}
+	
+	public String getLemma() {
+		return lemma;
 	}
 }
