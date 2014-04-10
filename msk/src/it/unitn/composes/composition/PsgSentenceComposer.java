@@ -43,7 +43,7 @@ public class PsgSentenceComposer implements SentenceComposer{
 		if (headChild == null) return false;
 		String headLemma = headChild.getLemma();
 		char headType = headLemma.charAt(headLemma.length() - 1);
-		if (headType != 'v' || headType != 'n') {
+		if (headType != 'v' && headType != 'n') {
 			return false;
 		}
 		if (headType == 'n') {
@@ -71,6 +71,7 @@ public class PsgSentenceComposer implements SentenceComposer{
 	protected double[] composeSingleStructure(LexicalizedSemanticTree head, LexicalizedSemanticTree component) {
 		double[] headVector = head.getVector();
 		String componentType = getCompositionType(head, component);
+//		System.out.println(componentType);
 		if (compositions.containsKey(componentType)) {
 			return compositions.get(componentType).compose(head.getVector(), component.getVector());
 		} else {
@@ -114,6 +115,7 @@ public class PsgSentenceComposer implements SentenceComposer{
 			boolean hasComp = hasComposition(tree, headChild);
 			double[] vector = new double[semanticSpace.getVectorSize()];
 			if (hasComp) {
+//				System.out.println("Fa in action");
 				LexicalizedSemanticTree headSemanticChild = buildSemanticTree(headChild, semanticSpace);
 				for (Tree child: tree.getChildren()) {
 					if (headChild != child) {
