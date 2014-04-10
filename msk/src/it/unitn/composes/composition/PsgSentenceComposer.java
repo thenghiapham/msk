@@ -19,6 +19,7 @@ public class PsgSentenceComposer implements SentenceComposer{
 	protected HashMap<String, BasicComposition> compositions;
 	public PsgSentenceComposer(HashMap<String, BasicComposition> compositions) {
 		this.compositions = compositions;
+		
 	}
 	
 	public PsgSentenceComposer(String faMatrixFile) {
