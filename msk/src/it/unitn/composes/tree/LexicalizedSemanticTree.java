@@ -76,6 +76,10 @@ public class LexicalizedSemanticTree extends Tree{
 		return this.vector;
 	}
 	
+	public void setVector(double[] aVector) {
+		this.vector = aVector;
+	}
+	
 	public Vector<LexicalizedSemanticTree> getAllNodes() {
 		Vector<LexicalizedSemanticTree> all = new Vector<LexicalizedSemanticTree>();
 		for (Tree child : this.getChildren())

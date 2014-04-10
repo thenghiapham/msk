@@ -31,9 +31,10 @@ public class StructureUtils {
 			line = reader.readLine();
 			if (line == null) break;
 			String[] elements = line.split("\t");
-			if (elements.length != size) {
+			if (elements.length != size + 1) {
 				reader.close();
-				throw new IOException("Wrong number of elements");
+				throw new IOException("Wrong number of elements: " + size 
+						+ " vs. " + elements.length);
 			}
 			double[] data = new double[row * col];
 			for (int i = 0; i < size; i++) {

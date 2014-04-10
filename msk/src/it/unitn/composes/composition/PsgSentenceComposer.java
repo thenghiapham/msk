@@ -21,19 +21,25 @@ public class PsgSentenceComposer implements SentenceComposer{
 		this.compositions = compositions;
 	}
 	
-	public PsgSentenceComposer(String faMatrixFile) throws IOException{
+	public PsgSentenceComposer(String faMatrixFile) {
 		this.compositions = new HashMap<String, BasicComposition>();
-		HashMap<String, SimpleMatrix> matrices = StructureUtils.readFaMatrixFile(faMatrixFile);
-		Iterator<String> keyIterator = matrices.keySet().iterator();
-		while (keyIterator.hasNext()) {
-			String structure = keyIterator.toString();
-			SimpleMatrix matrix = matrices.get(structure);
-			BasicComposition composition = new FullAdditive(matrix);
-			this.compositions.put(structure, composition);
+		try {
+			HashMap<String, SimpleMatrix> matrices = StructureUtils.readFaMatrixFile(faMatrixFile);
+			Iterator<String> keyIterator = matrices.keySet().iterator();
+			while (keyIterator.hasNext()) {
+				String structure = keyIterator.next().toString();
+				SimpleMatrix matrix = matrices.get(structure);
+				BasicComposition composition = new FullAdditive(matrix);
+				this.compositions.put(structure, composition);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 	
 	protected boolean hasComposition(LexicalizedTree tree, LexicalizedTree headChild) {
+		if (headChild == null) return false;
 		String headLemma = headChild.getLemma();
 		char headType = headLemma.charAt(headLemma.length() - 1);
 		if (headType != 'v' || headType != 'n') {
@@ -97,7 +103,11 @@ public class PsgSentenceComposer implements SentenceComposer{
 		if (tree.isPreTerminal()) {
 			return new LexicalizedSemanticTree(tree, semanticSpace, null);
 		} else {
-			LexicalizedSemanticTree semTree = new LexicalizedSemanticTree(tree);
+			if (tree.isTerminal()) {
+				System.out.println("Weird");
+				return new LexicalizedSemanticTree(tree, semanticSpace, null);
+			}
+			
 			LexicalizedTree headChild = getHeadChild(tree);
 			Vector<Tree> newChildren = new Vector<Tree>();
 			boolean hasComp = hasComposition(tree, headChild);
@@ -113,6 +123,7 @@ public class PsgSentenceComposer implements SentenceComposer{
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
+							System.exit(1);
 						}
 						newChildren.add(semanticChild);
 					} else {
@@ -126,13 +137,18 @@ public class PsgSentenceComposer implements SentenceComposer{
 						vector = ArrayMath.sum(vector, semanticChild.getVector());
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
+						
 						e.printStackTrace();
+						System.exit(1);
 					}
+					
 					newChildren.add(semanticChild);
 				}
 			}
 			
-			 
+			LexicalizedSemanticTree semTree = new LexicalizedSemanticTree(tree); 
+			semTree.setVector(vector);
+			semTree.setChildren(newChildren);
 			return semTree;
 		}
 		//TODO: put more things here
@@ -145,8 +161,10 @@ public class PsgSentenceComposer implements SentenceComposer{
 		} else if (tree.isPreTerminal()) { 
 			return (LexicalizedTree) tree.getChildren().get(0);
 		} else {
+			String lemma = tree.getLemma();
+			if (lemma == null) return null;
 			for (Tree child: tree.getChildren()) {
-				if ( ((LexicalizedTree) tree).getLemma().equals(((LexicalizedTree) child).getLemma())) {
+				if ( tree.getLemma().equals(((LexicalizedTree) child).getLemma())) {
 					return (LexicalizedTree) child;
 				}
 			}
