@@ -7,10 +7,6 @@ public class FullAdditive implements BasicComposition{
 	public FullAdditive(SimpleMatrix tranposedStackedMatrix) {
 		this.transposedStackedMatrix = tranposedStackedMatrix;
 	}
-//	public FullAdditive(SimpleMatrix aMatrix,SimpleMatrix bMatrix) {
-//		this.transposedStackedMatrix = aMatrix.transpose();
-//	}
-	
 
 	@Override
 	public double[] compose(double[] v1, double[] v2) {
@@ -19,8 +15,6 @@ public class FullAdditive implements BasicComposition{
 		System.arraycopy(v2, 0, stackedVector[0], v1.length, v2.length);
 		stackedVector[0][v1.length + v2.length] = 1;
 		SimpleMatrix inputMatrix = new SimpleMatrix(stackedVector);
-//		System.out.println("input vector size: " + inputMatrix.numRows() + " " + inputMatrix.numCols());
-//		System.out.println("internal mat size: " + transposedStackedMatrix.numRows() + " " + transposedStackedMatrix.numCols());
 		return inputMatrix.mult(transposedStackedMatrix).getMatrix().getData();
 	}
 }
