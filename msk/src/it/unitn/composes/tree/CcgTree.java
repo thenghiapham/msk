@@ -164,4 +164,8 @@ public class CcgTree extends Tree{
 			return newTree;
 		}
 	}
+	
+	public String getLemma() {
+		return lemma;
+	}
 }

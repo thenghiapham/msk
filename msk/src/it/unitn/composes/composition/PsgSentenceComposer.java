@@ -11,6 +11,7 @@ import it.uniroma2.util.math.ArrayMath;
 import it.uniroma2.util.tree.LexicalizedTree;
 import it.uniroma2.util.tree.Tree;
 import it.uniroma2.util.vector.VectorProvider;
+import it.unitn.composes.tree.CcgTree;
 import it.unitn.composes.tree.LexicalizedSemanticTree;
 import it.unitn.composes.utils.StructureUtils;
 
@@ -40,6 +41,36 @@ public class PsgSentenceComposer implements SentenceComposer{
 	}
 	
 	protected boolean hasComposition(LexicalizedTree tree, LexicalizedTree headChild) {
+		if (headChild == null) return false;
+		String headLemma = headChild.getLemma();
+		char headType = headLemma.charAt(headLemma.length() - 1);
+		if (headType != 'v' && headType != 'n') {
+			return false;
+		}
+		if (headType == 'n') {
+			if ("NN".equals(headChild.getRootLabel()) || "NNS".equals(headChild.getRootLabel())) {
+				for (Tree child: tree.getChildren()) {
+					if ("JJ".equals(child.getRootLabel())) return true;
+				}
+			}
+		}
+		if (headType == 'v') {
+			if (headChild.getRootLabel().startsWith("VB")) {
+				for (Tree child: tree.getChildren()) {
+					if ("NP".equals(child.getRootLabel())) return true;
+				}
+			} 
+//			else if (headChild.getRootLabel().startsWith("VP")) {
+//				for (Tree child: tree.getChildren()) {
+//					if ("NP".equals(child.getRootLabel())) return true;
+//				}
+//			}
+		}
+		return false;
+	}
+	
+	protected boolean hasComposition(CcgTree tree, LexicalizedTree headChild) {
+		//TODO: fix here
 		if (headChild == null) return false;
 		String headLemma = headChild.getLemma();
 		char headType = headLemma.charAt(headLemma.length() - 1);
@@ -158,7 +189,82 @@ public class PsgSentenceComposer implements SentenceComposer{
 		
 	}
 	
+	public LexicalizedSemanticTree buildSemanticTree(CcgTree tree, VectorProvider semanticSpace) {
+		if (tree.isPreTerminal()) {
+			return new LexicalizedSemanticTree(tree, semanticSpace, null);
+		} else {
+			if (tree.isTerminal()) {
+				System.out.println("Weird");
+				return new LexicalizedSemanticTree(tree, semanticSpace, null);
+			}
+			
+			LexicalizedTree headChild = getHeadChild(tree);
+			Vector<Tree> newChildren = new Vector<Tree>();
+			boolean hasComp = hasComposition(tree, headChild);
+			double[] vector = new double[semanticSpace.getVectorSize()];
+			if (hasComp) {
+//				System.out.println("Fa in action");
+				LexicalizedSemanticTree headSemanticChild = buildSemanticTree(headChild, semanticSpace);
+				for (Tree child: tree.getChildren()) {
+					if (headChild != child) {
+						LexicalizedSemanticTree semanticChild = buildSemanticTree((LexicalizedTree)child, semanticSpace);
+						double[] iVector = composeSingleStructure(headSemanticChild, semanticChild);
+						try {
+							vector = ArrayMath.sum(vector, iVector);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+							System.exit(1);
+						}
+						newChildren.add(semanticChild);
+					} else {
+						newChildren.add(headSemanticChild);
+					}
+				}
+			} else {
+				for (Tree child: tree.getChildren()) {
+					LexicalizedSemanticTree semanticChild = buildSemanticTree((LexicalizedTree)child, semanticSpace);
+					try {
+						vector = ArrayMath.sum(vector, semanticChild.getVector());
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						
+						e.printStackTrace();
+						System.exit(1);
+					}
+					
+					newChildren.add(semanticChild);
+				}
+			}
+			
+			LexicalizedSemanticTree semTree = new LexicalizedSemanticTree(tree); 
+			semTree.setVector(vector);
+			semTree.setChildren(newChildren);
+			return semTree;
+		}
+		//TODO: put more things here
+		
+	}
+	
 	protected LexicalizedTree getHeadChild(LexicalizedTree tree) {
+		if (tree.isTerminal()) {
+			return null;
+		} else if (tree.isPreTerminal()) { 
+			return (LexicalizedTree) tree.getChildren().get(0);
+		} else {
+			String lemma = tree.getLemma();
+			if (lemma == null) return null;
+			for (Tree child: tree.getChildren()) {
+				if ( tree.getLemma().equals(((LexicalizedTree) child).getLemma())) {
+					return (LexicalizedTree) child;
+				}
+			}
+			return null;
+		}
+	}
+	
+	protected LexicalizedTree getHeadChild(CcgTree tree) {
+		// TODO: fix here with left, right rule
 		if (tree.isTerminal()) {
 			return null;
 		} else if (tree.isPreTerminal()) { 

@@ -66,7 +66,52 @@ public class LexicalizedSemanticTree extends Tree{
 		}
 	}
 	
+	public LexicalizedSemanticTree(CcgTree syntacticTree, VectorProvider semanticSpace, BasicComposition com) {
+		String label = syntacticTree.getRootLabel();
+		setRootLabel(label);
+		Vector<Tree> children = new Vector<Tree>();
+		lemma = syntacticTree.getLemma();
+		if (lemma == null) lemma = "";
+		if (syntacticTree.isTerminal()) {
+			// TODO: check this
+			vector = ArrayMath.zeros(semanticSpace.getVectorSize());
+			try {
+				
+				vector = semanticSpace.getVector(lemma);
+			} catch (Exception e) {
+				e.printStackTrace();
+				vector = ArrayMath.zeros(semanticSpace.getVectorSize());
+			}
+		} else if (syntacticTree.isPreTerminal()) {
+			LexicalizedTree syntacticChild = (LexicalizedTree) syntacticTree.getChildren().get(0);
+			LexicalizedSemanticTree child = new LexicalizedSemanticTree(syntacticChild, semanticSpace, com);
+			children.add(child);
+			this.vector = child.vector;
+			this.setChildren(children);
+		} else {
+			for (Tree syntacticChild: syntacticTree.getChildren()) {
+				LexicalizedSemanticTree child = new LexicalizedSemanticTree((LexicalizedTree) syntacticChild, semanticSpace, com);
+				children.add(child);
+				
+				if (child.vector != null) {
+					if (this.vector == null) {
+						this.vector = child.vector;
+					} else {
+						this.vector = com.compose(this.vector, child.vector);
+					}
+				}
+			}
+			this.setChildren(children);
+		}
+	}
+	
 	public LexicalizedSemanticTree(LexicalizedTree tree) {
+		String label = tree.getRootLabel();
+		setRootLabel(label);
+		this.vector = null;
+	}
+	
+	public LexicalizedSemanticTree(CcgTree tree) {
 		String label = tree.getRootLabel();
 		setRootLabel(label);
 		this.vector = null;

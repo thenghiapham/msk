@@ -2,6 +2,7 @@ package it.unitn.composes.composition;
 
 import it.uniroma2.util.tree.LexicalizedTree;
 import it.uniroma2.util.vector.VectorProvider;
+import it.unitn.composes.tree.CcgTree;
 import it.unitn.composes.tree.LexicalizedSemanticTree;
 
 public class BasicSentenceComposer implements SentenceComposer{
@@ -15,6 +16,12 @@ public class BasicSentenceComposer implements SentenceComposer{
 	}
 	@Override
 	public LexicalizedSemanticTree buildSemanticTree(LexicalizedTree tree,
+			VectorProvider semanticSpace) {
+		return new LexicalizedSemanticTree(tree, semanticSpace, compositionModel);
+	}
+	
+	@Override
+	public LexicalizedSemanticTree buildSemanticTree(CcgTree tree,
 			VectorProvider semanticSpace) {
 		return new LexicalizedSemanticTree(tree, semanticSpace, compositionModel);
 	}
