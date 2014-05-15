@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 
 import it.uniroma2.util.math.ArrayMath;
-import it.uniroma2.util.vector.RandomVectorGenerator;
 import it.uniroma2.util.vector.VectorProvider;
 
 public class SemanticSpace implements VectorProvider{
