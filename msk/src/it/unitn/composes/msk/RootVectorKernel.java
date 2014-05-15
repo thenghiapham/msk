@@ -1,7 +1,6 @@
 package it.unitn.composes.msk;
 
 import java.io.File;
-import java.io.IOException;
 
 import edu.berkeley.compbio.jlibsvm.kernel.KernelFunction;
 import it.uniroma2.util.tree.LexicalizedTree;

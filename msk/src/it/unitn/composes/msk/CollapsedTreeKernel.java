@@ -8,7 +8,6 @@ import edu.berkeley.compbio.jlibsvm.kernel.KernelFunction;
 import it.uniroma2.util.tree.LexicalizedTree;
 import it.uniroma2.util.tree.Tree;
 import it.uniroma2.util.vector.VectorProvider;
-import it.uniroma2.util.math.ArrayMath;
 import it.unitn.composes.composition.BasicComposition;
 import it.unitn.composes.math.VectorUtils;
 import it.unitn.composes.tree.LexicalizedSemanticTree;
