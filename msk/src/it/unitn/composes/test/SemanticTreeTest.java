@@ -1,6 +1,7 @@
 package it.unitn.composes.test;
 
 import it.uniroma2.util.tree.Tree;
+import it.unitn.composes.tree.CcgTree;
 import it.unitn.composes.tree.SemanticTree;
 
 public class SemanticTreeTest {
@@ -11,7 +12,7 @@ public class SemanticTreeTest {
             +"   <lf start=\"2\" span=\"1\" word=\"guitar\" lemma=\"guitar\" pos=\"NN\" chunk=\"I-NP\" entity=\"O\" cat=\"N\" />"
             +"</rule>"
           +"</rule></ccg>";
-		Tree tree = SemanticTree.parseTreeFromCcgXml(xmlString, true);
+		Tree tree = CcgTree.parseTreeFromCcgXml(xmlString);
 		System.out.println(tree.toPennTree());
 		String pennString = "(S[dcl]\\NP (<S[dcl]\\NP>/NP plays) (NP (N guitar)))";
 		try {
