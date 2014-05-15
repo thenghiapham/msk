@@ -2,7 +2,6 @@ package it.unitn.composes.test;
 
 import it.uniroma2.util.tree.Tree;
 import it.unitn.composes.tree.CcgTree;
-import it.unitn.composes.tree.SemanticTree;
 
 public class SemanticTreeTest {
 	public static void testParseTree() {
