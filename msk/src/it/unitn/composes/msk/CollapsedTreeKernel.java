@@ -16,7 +16,7 @@ import it.unitn.composes.utils.StructureUtils;
 
 public class CollapsedTreeKernel implements KernelFunction<Tree>{
 
-	private double lambda = 0.4;
+	protected double lambda = 0.4;
 //	private boolean lexicalized = true;
 	protected VectorProvider semanticSpace;
 	protected BasicComposition composition; 

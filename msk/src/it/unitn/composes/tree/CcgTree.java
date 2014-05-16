@@ -35,7 +35,7 @@ public class CcgTree extends Tree{
 			DocumentBuilder builder = builderFactory.newDocumentBuilder();
 			Document doc = builder.parse(new ByteArrayInputStream(xmlString.getBytes("iso-8859-1")));
 			Node root = doc.getFirstChild();
-			CcgTree result = parseTreeFromNode(root);
+			CcgTree result = parseTreeFromNode(root);	
 			result.setParent(null);
 			return result;
 			

@@ -2,12 +2,18 @@ package it.unitn.composes.msk;
 
 import it.uniroma2.util.tree.LexicalizedTree;
 import it.uniroma2.util.tree.Tree;
+import it.uniroma2.util.vector.VectorProvider;
+import it.unitn.composes.composition.SentenceComposer;
 import it.unitn.composes.exception.ValueException;
 import it.unitn.composes.tree.CcgTree;
 import it.unitn.composes.tree.LexicalizedSemanticTree;
 import edu.berkeley.compbio.jlibsvm.kernel.KernelFunction;
 
 public class CollapsedTreeKernel3 extends CollapsedTreeKernel2 implements  KernelFunction<Tree> {
+	public CollapsedTreeKernel3(double lambda, VectorProvider semanticSpace, SentenceComposer composer) {
+		super(lambda, semanticSpace, composer);
+	}
+	
 	public double value(Tree arg0, Tree arg1) {
 		try {
 			LexicalizedSemanticTree tree1 = composer.buildSemanticTree(CcgTree.ccgizeTree(arg0), semanticSpace);

@@ -83,14 +83,14 @@ public class LexicalizedSemanticTree extends Tree{
 				vector = ArrayMath.zeros(semanticSpace.getVectorSize());
 			}
 		} else if (syntacticTree.isPreTerminal()) {
-			LexicalizedTree syntacticChild = (LexicalizedTree) syntacticTree.getChildren().get(0);
+			CcgTree syntacticChild = (CcgTree) syntacticTree.getChildren().get(0);
 			LexicalizedSemanticTree child = new LexicalizedSemanticTree(syntacticChild, semanticSpace, com);
 			children.add(child);
 			this.vector = child.vector;
 			this.setChildren(children);
 		} else {
 			for (Tree syntacticChild: syntacticTree.getChildren()) {
-				LexicalizedSemanticTree child = new LexicalizedSemanticTree((LexicalizedTree) syntacticChild, semanticSpace, com);
+				LexicalizedSemanticTree child = new LexicalizedSemanticTree((CcgTree) syntacticChild, semanticSpace, com);
 				children.add(child);
 				
 				if (child.vector != null) {
