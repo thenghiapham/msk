@@ -93,12 +93,32 @@ public class CcgTree extends Tree{
 			rootLabel = rootLabel.replaceAll("\\)", ">");
 			CcgTree result = new CcgTree(rootLabel);
 			Vector<Tree> children = new Vector<Tree>();
-				
-			CcgTree child = new CcgTree(attributes.getNamedItem("word").getNodeValue());
-			child.lemma = attributes.getNamedItem("lemma").getNodeValue().toLowerCase();
+			
+			String word = attributes.getNamedItem("word").getNodeValue();
+			if ("(".equals(word)) {
+				word = "LRB";
+			} else if (")".equals(word)) {
+				word = "RRB";
+			}
+			word = word.replaceAll(":", ".");
+			CcgTree child = new CcgTree(word);
+			
+			String lemma = attributes.getNamedItem("lemma").getNodeValue().toLowerCase();
+			if ("(".equals(lemma)) {
+				lemma = "LRB";
+			} else if (")".equals(lemma)) {
+				lemma = "RRB";
+			}
+			lemma = lemma.replaceAll(":", ".");
+			child.lemma = lemma;
 			child.cat = superTag;
+			
+			modifiedTag = modifiedTag.replaceAll(":", ".");
 			child.modifiedCat = modifiedTag;
-			child.pos = attributes.getNamedItem("pos").getNodeValue();
+			
+			String pos = attributes.getNamedItem("pos").getNodeValue();
+			pos = pos.replaceAll(":", ".");
+			child.pos = pos;
 //			System.out.println(child.lemma);
 			children.add(child);
 			result.setChildren(children);
@@ -125,7 +145,14 @@ public class CcgTree extends Tree{
 				return treeString;
 			}
 		} else {
-			return super.toPennTree();
+			if (this.isTerminal()) {
+				String treeString = "("+ this.getRootLabel();
+				treeString += " ";
+				treeString += getRootLabel() + "::" + lemma + "::" + pos + "::" + modifiedCat;
+				treeString += ")";
+				return treeString;
+			} else 
+				return super.toPennTree();
 		}
 	}
 	
@@ -139,7 +166,7 @@ public class CcgTree extends Tree{
 			String rootLabel = aTree.getRootLabel();
 			String[] elements = rootLabel.split("::");
 			if (elements.length != 4) {
-				throw new ValueException("ccgizable terminal node should have 4 information");
+				throw new ValueException("ccgizable terminal node should have 4 information: " + rootLabel);
 			}
 			String word = elements[0];
 			String lemma = elements[1];

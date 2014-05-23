@@ -132,6 +132,12 @@ public class PsgSentenceComposer implements SentenceComposer{
 		return buildSemanticTree(tree, semanticSpace).getVector();
 	}
 	
+	@Override
+	public double[] compose(CcgTree tree, VectorProvider semanticSpace) {
+		// TODO Auto-generated method stub
+		return buildSemanticTree(tree, semanticSpace).getVector();
+	}
+	
 	public LexicalizedSemanticTree buildSemanticTree(LexicalizedTree tree, VectorProvider semanticSpace) {
 		if (tree.isPreTerminal()) {
 			return new LexicalizedSemanticTree(tree, semanticSpace, null);

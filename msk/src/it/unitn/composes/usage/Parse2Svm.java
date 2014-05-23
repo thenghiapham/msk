@@ -49,6 +49,7 @@ public class Parse2Svm {
 			}
 			gsReader.close();
 			parseReader.close();
+			negationReader.close();
 			trainWriter.flush();
 			trainWriter.close();
 			testWriter.flush();
@@ -57,8 +58,5 @@ public class Parse2Svm {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
-		
 	}
 }

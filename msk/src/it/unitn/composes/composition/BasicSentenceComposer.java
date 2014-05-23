@@ -14,6 +14,11 @@ public class BasicSentenceComposer implements SentenceComposer{
 		LexicalizedSemanticTree semanticTree = new LexicalizedSemanticTree(tree, semanticSpace, compositionModel);
 		return semanticTree.getVector();
 	}
+	
+	public double[] compose(CcgTree tree, VectorProvider semanticSpace) {
+		LexicalizedSemanticTree semanticTree = new LexicalizedSemanticTree(tree, semanticSpace, compositionModel);
+		return semanticTree.getVector();
+	}
 	@Override
 	public LexicalizedSemanticTree buildSemanticTree(LexicalizedTree tree,
 			VectorProvider semanticSpace) {
