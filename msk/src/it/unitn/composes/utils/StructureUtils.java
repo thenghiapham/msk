@@ -2,6 +2,7 @@ package it.unitn.composes.utils;
 
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
@@ -33,7 +34,7 @@ public class StructureUtils {
 			String[] elements = line.split("\t");
 			if (elements.length != size + 1) {
 				reader.close();
-				throw new IOException("Wrong number of elements: " + size 
+				throw new IOException("Wrong number of elements: " + (size + 1) 
 						+ " vs. " + elements.length);
 			}
 			double[] data = new double[row * col];
@@ -45,5 +46,13 @@ public class StructureUtils {
 		}
 		reader.close();
 		return result;
+	}
+	
+	public static void printFlattenMatrix(SimpleMatrix matrix, BufferedWriter writer) throws IOException{
+		double[] data = matrix.getMatrix().data;
+		for (int i = 0; i < data.length - 1; i++) {
+			writer.write(data[i] + "\t");
+		}
+		writer.write("" + data[data.length - 1]);
 	}
 }

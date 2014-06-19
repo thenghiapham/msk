@@ -69,7 +69,7 @@ public class PsgSentenceComposer implements SentenceComposer{
 		return false;
 	}
 	
-	protected boolean hasComposition(CcgTree tree, LexicalizedTree headChild) {
+	protected boolean hasComposition(CcgTree tree, CcgTree headChild) {
 		//TODO: fix here
 		if (headChild == null) return false;
 		String headLemma = headChild.getLemma();
@@ -204,7 +204,7 @@ public class PsgSentenceComposer implements SentenceComposer{
 				return new LexicalizedSemanticTree(tree, semanticSpace, null);
 			}
 			
-			LexicalizedTree headChild = getHeadChild(tree);
+			CcgTree headChild = getHeadChild(tree);
 			Vector<Tree> newChildren = new Vector<Tree>();
 			boolean hasComp = hasComposition(tree, headChild);
 			double[] vector = new double[semanticSpace.getVectorSize()];
@@ -269,18 +269,18 @@ public class PsgSentenceComposer implements SentenceComposer{
 		}
 	}
 	
-	protected LexicalizedTree getHeadChild(CcgTree tree) {
+	protected CcgTree getHeadChild(CcgTree tree) {
 		// TODO: fix here with left, right rule
 		if (tree.isTerminal()) {
 			return null;
 		} else if (tree.isPreTerminal()) { 
-			return (LexicalizedTree) tree.getChildren().get(0);
+			return (CcgTree) tree.getChildren().get(0);
 		} else {
 			String lemma = tree.getLemma();
 			if (lemma == null) return null;
 			for (Tree child: tree.getChildren()) {
-				if ( tree.getLemma().equals(((LexicalizedTree) child).getLemma())) {
-					return (LexicalizedTree) child;
+				if ( tree.getLemma().equals(((CcgTree) child).getLemma())) {
+					return (CcgTree) child;
 				}
 			}
 			return null;

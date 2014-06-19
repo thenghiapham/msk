@@ -1,16 +1,10 @@
 package it.unitn.composes.msk;
 
-import java.io.File;
-
 import edu.berkeley.compbio.jlibsvm.kernel.KernelFunction;
-import it.uniroma2.util.tree.LexicalizedTree;
 import it.uniroma2.util.tree.Tree;
 import it.uniroma2.util.vector.VectorProvider;
-import it.unitn.composes.composition.Additive;
-import it.unitn.composes.composition.PsgSentenceComposer;
 import it.unitn.composes.composition.SentenceComposer;
 import it.unitn.composes.math.VectorUtils;
-import it.unitn.composes.space.SemanticSpace;
 import it.unitn.composes.tree.CcgTree;
 
 
@@ -31,6 +25,8 @@ public class CcgRootVectorKernel implements KernelFunction<Tree>{
 			return VectorUtils.cosine(vector1, vector2);
 		} catch (Exception e) {
 			e.printStackTrace();
+			System.out.println("Wrong tree 1:" + arg0.toPennTree());
+			System.out.println("Wrong tree 2:" + arg1.toPennTree());
 			return 0;
 		}
 	}

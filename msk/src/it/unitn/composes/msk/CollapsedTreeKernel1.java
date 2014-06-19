@@ -16,6 +16,8 @@ public class CollapsedTreeKernel1 extends CollapsedTreeKernel implements KernelF
 	
 	public double value(Tree arg0, Tree arg1) {
 		try {
+//			System.out.println(arg0.toPennTree());
+			//System.exit(0);
 			LexicalizedSemanticTree tree1 = new LexicalizedSemanticTree(CcgTree.ccgizeTree(arg0), semanticSpace, composition);
 			LexicalizedSemanticTree tree2 = new LexicalizedSemanticTree(CcgTree.ccgizeTree(arg1), semanticSpace, composition);
 	//		System.out.println("*****************************");
@@ -31,6 +33,8 @@ public class CollapsedTreeKernel1 extends CollapsedTreeKernel implements KernelF
 			return value;
 		} catch (ValueException e) {
 			e.printStackTrace();
+			System.out.println("Wrong tree 1:" + arg0.toPennTree());
+			System.out.println("Wrong tree 2:" + arg1.toPennTree());
 			return 0;
 		}
 	}
