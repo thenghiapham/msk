@@ -6,6 +6,7 @@ import it.unitn.composes.exception.ValueException;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -302,5 +303,58 @@ public class CcgTree extends Tree{
 	
 	public String getLemma() {
 		return lemma;
+	}
+	
+	
+	public List<CcgTree> getAllSubTree(int height) {
+		List<CcgTree> list = new ArrayList<CcgTree>();
+		getHeightAndAdd(list, height);
+		return list;
+	}
+	
+	private int getHeightAndAdd(List<CcgTree> list, int targetHeight) {
+		int height = 0;
+		List<Tree> children = getChildren();
+		if (children.size() == 0) {
+			height = 1;
+		} else {
+			if (children.size() == 1) {
+				CcgTree ccgChild = (CcgTree) children.get(0);
+				height = ccgChild.getHeightAndAdd(list, targetHeight);
+			} else {
+				for (Tree child: children) {
+					CcgTree ccgChild = (CcgTree) child;
+					height = Math.max(height, ccgChild.getHeightAndAdd(list, targetHeight));
+				}
+				height = height + 1;
+			}
+		}
+		if (height == targetHeight) {
+			list.add(this);
+		}
+		return height;
+	}
+	
+	public String shortPennTree() {
+		List<Tree> children = this.getChildren();
+		String treeString = "("+ this.getRootLabel();
+		treeString += " ";
+		if (children.size() == 1) {
+			CcgTree child = (CcgTree) getChildren().get(0); 
+			if (children.get(0).getChildren().size() != 0)
+				treeString += child.shortPennTree();
+			else {
+				treeString += child.pos;
+			}
+		} else {
+			if (this.isTerminal()) {
+				treeString += pos;
+			} else {
+				for (Tree child : children)
+					treeString += ((CcgTree) child).shortPennTree();
+			}
+		}
+		treeString += ")";
+		return treeString;
 	}
 }
