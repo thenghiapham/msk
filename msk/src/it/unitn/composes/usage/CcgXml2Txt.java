@@ -10,6 +10,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import org.xml.sax.SAXException;
+
 public class CcgXml2Txt {
 	
 	public static void convertDirectory(String ccgDir, String txtDir) {
@@ -49,7 +51,12 @@ public class CcgXml2Txt {
 				}
 				if (line.equals("</ccg>")) {
 					inCcg = false;
-					String sentence = CcgTree.parseTreeFromCcgXml(xmlString).toPennTree();
+					String sentence = "";
+					try {
+						sentence = CcgTree.parseTreeFromCcgXml(xmlString).toPennTree();
+					} catch (SAXException saxe) {
+						sentence = "()";
+					}
 					if (oddSentence) {
 						firstSentence = sentence;
 						oddSentence = false;

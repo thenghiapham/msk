@@ -1,10 +1,12 @@
 package it.unitn.composes.test;
 
+import org.xml.sax.SAXException;
+
 import it.uniroma2.util.tree.Tree;
 import it.unitn.composes.tree.CcgTree;
 
 public class SemanticTreeTest {
-	public static void testParseTree() {
+	public static void testParseTree() throws SAXException{
 		String xmlString = "<ccg><rule type=\"fa\" cat=\"S[dcl]\\NP\">"
             +"<lf start=\"1\" span=\"1\" word=\"plays\" lemma=\"play\" pos=\"VBZ\" chunk=\"I-VP\" entity=\"O\" cat=\"(S[dcl]\\NP)/NP\" />"
             +"<rule type=\"lex\" cat=\"NP\">"
@@ -22,7 +24,7 @@ public class SemanticTreeTest {
 		}
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws SAXException{
 		testParseTree();
 	}
 }

@@ -35,7 +35,7 @@ public class CcgTree extends Tree{
 		super(rootLabel);
 	}
 
-	public static CcgTree parseTreeFromCcgXml(String xmlString) {
+	public static CcgTree parseTreeFromCcgXml(String xmlString) throws SAXException {
 		DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
 		try {
 			DocumentBuilder builder = builderFactory.newDocumentBuilder();
@@ -47,8 +47,6 @@ public class CcgTree extends Tree{
 			
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
-		} catch (SAXException saxe) {
-			saxe.printStackTrace();
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
 		}
@@ -338,24 +336,30 @@ public class CcgTree extends Tree{
 	
 	public String shortPennTree() {
 		List<Tree> children = this.getChildren();
-		String treeString = "("+ this.getRootLabel();
-		treeString += " ";
+		String treeString = "";
+		
 		if (children.size() == 1) {
 			CcgTree child = (CcgTree) getChildren().get(0); 
-			if (children.get(0).getChildren().size() != 0)
+			if (children.get(0).getChildren().size() != 0){
 				treeString += child.shortPennTree();
-			else {
+			} else {
 				treeString += child.pos;
 			}
 		} else {
+			treeString = "(";
 			if (this.isTerminal()) {
 				treeString += pos;
 			} else {
-				for (Tree child : children)
+				//treeString += "X";
+				
+				for (Tree child : children) {
+					treeString += " ";
 					treeString += ((CcgTree) child).shortPennTree();
+				}
 			}
+			treeString += ")";
 		}
-		treeString += ")";
+		
 		return treeString;
 	}
 }

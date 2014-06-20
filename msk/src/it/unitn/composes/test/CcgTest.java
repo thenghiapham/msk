@@ -5,6 +5,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
+import org.xml.sax.SAXException;
+
 import it.unitn.composes.tree.CcgTree;
 
 public class CcgTest {
@@ -30,6 +32,8 @@ public class CcgTest {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (SAXException saxe) {
+			saxe.printStackTrace();
 		}
 		
 		
