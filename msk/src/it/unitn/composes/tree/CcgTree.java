@@ -307,7 +307,7 @@ public class CcgTree extends Tree{
 	
 	
 	public List<CcgTree> getAllSubTree(int height) {
-		List<CcgTree> list = new ArrayList<CcgTree>();
+		List<CcgTree> list = new ArrayList<CcgTree>(10);
 		getHeightAndAdd(list, height);
 		return list;
 	}
@@ -317,6 +317,7 @@ public class CcgTree extends Tree{
 		List<Tree> children = getChildren();
 		if (children.size() == 0) {
 			height = 1;
+			if (this.pos.length() == 1) height = 10;
 		} else {
 			if (children.size() == 1) {
 				CcgTree ccgChild = (CcgTree) children.get(0);
